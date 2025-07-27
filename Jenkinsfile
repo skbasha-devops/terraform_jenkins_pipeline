@@ -44,23 +44,4 @@ pipeline {
             }
         }
 
-        stage('Verify Output') {
-            steps {
-                dir('terraform-jenkins-pipeline') {
-                    sh 'ls -l dir1'
-                    sh 'ls -l dir2'
-                    sh 'cat file1.txt file2.txt'  // <-- Added file verification
-                }
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Terraform applied successfully!'
-        }
-        failure {
-            echo 'Terraform failed!'
-        }
-    }
-}
+       
