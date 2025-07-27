@@ -5,17 +5,17 @@ pipeline {
         stage('Clone Repo') {
             steps {
                 git(
-                    url: 'https://github.com/your-username/terraform-jenkins-pipeline.git',
-                    credentialsId: 'github-creds', // Match credential ID
+                    url: 'https://github.com/skbasha-devops/terraform_jenkins_pipeline.git',
+                    credentialsId: 'github-creds',
                     branch: 'main'
-                )  // <-- Missing closing parenthesis was here
+                )
             }
         }
 
         stage('Terraform Init') {
             steps {
-                dir('terraform-jenkins-pipeline') {  // <-- Added directory context
-                    sh 'terraform init'
+                dir('terraform-jenkins-pipeline') {
+                    sh 'terraform init -input=false'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir('terraform-jenkins-pipeline') {
-                    sh 'terraform plan -out=tfplan'
+                    sh 'terraform plan -out=tfplan -input=false'
                 }
             }
         }
@@ -39,9 +39,15 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform-jenkins-pipeline') {
-                    sh 'terraform apply -auto-approve tfplan'
+                    sh 'terraform apply -auto-approve -input=false tfplan'
                 }
             }
         }
-
-       
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
