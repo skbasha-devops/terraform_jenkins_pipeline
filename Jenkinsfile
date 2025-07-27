@@ -8,37 +8,49 @@ pipeline {
                     url: 'https://github.com/your-username/terraform-jenkins-pipeline.git',
                     credentialsId: 'github-creds', // Match credential ID
                     branch: 'main'
+                )  // <-- Missing closing parenthesis was here
             }
         }
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                dir('terraform-jenkins-pipeline') {  // <-- Added directory context
+                    sh 'terraform init'
+                }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                sh 'terraform validate'
+                dir('terraform-jenkins-pipeline') {
+                    sh 'terraform validate'
+                }
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan -out=tfplan'
+                dir('terraform-jenkins-pipeline') {
+                    sh 'terraform plan -out=tfplan'
+                }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                sh 'terraform apply -auto-approve tfplan'
+                dir('terraform-jenkins-pipeline') {
+                    sh 'terraform apply -auto-approve tfplan'
+                }
             }
         }
 
         stage('Verify Output') {
             steps {
-                sh 'ls -l dir1'
-                sh 'ls -l dir2'
+                dir('terraform-jenkins-pipeline') {
+                    sh 'ls -l dir1'
+                    sh 'ls -l dir2'
+                    sh 'cat file1.txt file2.txt'  // <-- Added file verification
+                }
             }
         }
     }
